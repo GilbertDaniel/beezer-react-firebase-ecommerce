@@ -6,16 +6,14 @@ import './navigation.styles.scss';
 import BeezerLogo from '../../assets/beezer.jpg';
 import { UserContext } from './../../context/UserContext';
 import { signOutUser } from '../../utils/firebase/firebase';
+import { CartContext } from './../../context/CartContext';
+import CartIcon from './../../components/cart-icon/CartIcon';
+import CartDropdown from './../../components/cart-dropdown/CartDropdown';
 
 const Navigation = () => {
+  const { currentUser } = useContext(UserContext);
+  const { isCartOpen } = useContext(CartContext);
 
-  const { currentUser, setCurrentUser } = useContext(UserContext);
-
-  const signOutHandler = async () => {
-    await signOutUser();
-    setCurrentUser(null);
-  };
-  
   return (
     <Fragment>
       <div className='navigation'>
@@ -27,17 +25,19 @@ const Navigation = () => {
           <Link className='nav-link' to='/shop'>
             SHOP
           </Link>
+
           {currentUser ? (
-            <span className='nav-link' onClick={signOutHandler}>
-              {' '}
-              SIGN OUT{' '}
+            <span className='nav-link' onClick={signOutUser}>
+              SIGN OUT
             </span>
           ) : (
             <Link className='nav-link' to='/auth'>
               SIGN IN
             </Link>
           )}
+          <CartIcon />
         </div>
+        {isCartOpen && <CartDropdown />}
       </div>
       <Outlet />
     </Fragment>
