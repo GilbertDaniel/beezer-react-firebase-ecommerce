@@ -1,29 +1,31 @@
 import { initializeApp } from 'firebase/app';
 import {
-    getAuth,
-    signInWithRedirect,
-    signInWithPopup,
-    GoogleAuthProvider,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged,
+  getAuth,
+  signInWithRedirect,
+  signInWithPopup,
+  GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
 } from 'firebase/auth';
 
 import {
-    doc,
-    getDoc,
-    setDoc,
-    getFirestore
+  doc,
+  getDoc,
+  setDoc,
+  getFirestore,
+  collection,
+  writeBatch
 } from 'firebase/firestore'
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBfMS_DWdC9fT-Volg295c3MLb4XqEkk4I",
-    authDomain: "beezer-react-app-db.firebaseapp.com",
-    projectId: "beezer-react-app-db",
-    storageBucket: "beezer-react-app-db.appspot.com",
-    messagingSenderId: "646979238849",
-    appId: "1:646979238849:web:1eba93373eb22e841b0d40"
+  apiKey: "AIzaSyBfMS_DWdC9fT-Volg295c3MLb4XqEkk4I",
+  authDomain: "beezer-react-app-db.firebaseapp.com",
+  projectId: "beezer-react-app-db",
+  storageBucket: "beezer-react-app-db.appspot.com",
+  messagingSenderId: "646979238849",
+  appId: "1:646979238849:web:1eba93373eb22e841b0d40"
 };
 
 
@@ -42,6 +44,22 @@ export const signInWithGoogleRedirect = () =>
   signInWithRedirect(auth, googleProvider);
 
 export const db = getFirestore();
+
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const batch = writeBatch(db);
+  const collectionRef = collection(db, collectionKey);
+
+  objectsToAdd.forEach((object) => {
+    const docRef = doc(collectionRef, object.title.toLowerCase());
+    batch.set(docRef, object);
+  });
+
+  await batch.commit();
+  console.log('done');
+};
 
 export const createUserDocumentFromAuth = async (
   userAuth,
