@@ -1,7 +1,12 @@
 import { Fragment, useContext } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 
-import './navigation.styles.scss';
+import {
+  NavigationContainer,
+  LogoContainer,
+  NavLinks,
+  NavLink,
+} from './navigation.styles';
 
 import BeezerLogo from '../../assets/beezer.jpg';
 import { UserContext } from './../../context/UserContext';
@@ -14,33 +19,29 @@ const Navigation = () => {
   const { currentUser } = useContext(UserContext);
   const { isCartOpen } = useContext(CartContext);
 
-  return (
+  return (    
     <Fragment>
-      <div className='navigation'>
-        <Link className='logo-container' to='/'>
-          {/* Logo Goes Here! */}
-          <img src={BeezerLogo} className='logo' />
-        </Link>
-        <div className='nav-links-container'>
-          <Link className='nav-link' to='/shop'>
-            SHOP
-          </Link>
+    <NavigationContainer>
+      <LogoContainer to='/'>
+        {/* Logo Goes Here! */}
+        <img src={BeezerLogo} className='logo' />
+      </LogoContainer>
+      <NavLinks>
+        <NavLink to='/shop'>SHOP</NavLink>
 
-          {currentUser ? (
-            <span className='nav-link' onClick={signOutUser}>
-              SIGN OUT
-            </span>
-          ) : (
-            <Link className='nav-link' to='/auth'>
-              SIGN IN
-            </Link>
-          )}
-          <CartIcon />
-        </div>
-        {isCartOpen && <CartDropdown />}
-      </div>
-      <Outlet />
-    </Fragment>
+        {currentUser ? (
+          <NavLink as='span' onClick={signOutUser}>
+            SIGN OUT
+          </NavLink>
+        ) : (
+          <NavLink to='/auth'>SIGN IN</NavLink>
+        )}
+        <CartIcon />
+      </NavLinks>
+      {isCartOpen && <CartDropdown />}
+    </NavigationContainer>
+    <Outlet />
+  </Fragment>
   );
 };
 
